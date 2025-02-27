@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = 'AKIASVLKCCI5HSX24XGK'
         AWS_SECRET_ACCESS_KEY = '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'
-        AWS_DEFAULT_REGION = 'us-east-1'  // Change if needed
+        AWS_DEFAULT_REGION = 'us-east-1'
     }
 
     stages {
@@ -20,7 +20,9 @@ pipeline {
                 script {
                     echo 'Setting up Python virtual environment...'
                     bat '"C:\\Users\\umapc\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe" -m venv venv'
-                    bat '.\\venv\\Scripts\\activate && pip install --upgrade pip'
+                    
+                    // Correct way to upgrade pip
+                    bat '.\\venv\\Scripts\\python.exe -m pip install --upgrade pip'
                 }
             }
         }
