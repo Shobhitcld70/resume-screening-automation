@@ -2,7 +2,8 @@ pipeline {
     agent any
 
     environment {
-        AWS_CREDENTIALS_FILE = 'C:\\Users\\umapc\\Downloads\\aws-user_accessKeys.csv'
+        AWS_ACCESS_KEY_ID = 'AKIASVLKCCI5HSX24XGK'
+        AWS_SECRET_ACCESS_KEY = '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'
         AWS_REGION = 'us-east-1'  // Change this if needed
     }
 
@@ -24,16 +25,16 @@ pipeline {
             }
         }
 
-        stage('Setup AWS Credentials') {
+        stage('Configure AWS Credentials') {
             steps {
                 script {
-                    echo 'Extracting AWS credentials...'
+                    echo 'Setting up AWS credentials...'
                     bat '''
-                    for /f "tokens=2,3 delims=," %%A in ('findstr /v "UserName" %AWS_CREDENTIALS_FILE%') do (
-                        echo [default] > %USERPROFILE%\\.aws\\credentials
-                        echo aws_access_key_id=%%A >> %USERPROFILE%\\.aws\\credentials
-                        echo aws_secret_access_key=%%B >> %USERPROFILE%\\.aws\\credentials
-                    )
+                    mkdir %USERPROFILE%\\.aws 2>nul
+                    echo [default] > %USERPROFILE%\\.aws\\credentials
+                    echo aws_access_key_id=%AWS_ACCESS_KEY_ID% >> %USERPROFILE%\\.aws\\credentials
+                    echo aws_secret_access_key=%AWS_SECRET_ACCESS_KEY% >> %USERPROFILE%\\.aws\\credentials
+
                     echo [default] > %USERPROFILE%\\.aws\\config
                     echo region=%AWS_REGION% >> %USERPROFILE%\\.aws\\config
                     '''
