@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = 'AKIASVLKCCI5HSX24XGK'
         AWS_SECRET_ACCESS_KEY = 'zz2uICfD/z1eZjCZndFRljWgdLuJqpiKQ+S2bOA6'
-        AWS_REGION = 'us-east-1'  // Change this if needed
+        AWS_DEFAULT_REGION = 'us-east-1'  // Change this to your actual region
     }
 
     stages {
@@ -25,28 +25,22 @@ pipeline {
             }
         }
 
-        stage('Configure AWS Credentials') {
+        stage('Get Latest Resume Filename') {
             steps {
                 script {
-                    echo 'Setting up AWS credentials...'
-                    bat '''
-                    mkdir %USERPROFILE%\\.aws 2>nul
-                    echo [default] > %USERPROFILE%\\.aws\\credentials
-                    echo aws_access_key_id=%AWS_ACCESS_KEY_ID% >> %USERPROFILE%\\.aws\\credentials
-                    echo aws_secret_access_key=%AWS_SECRET_ACCESS_KEY% >> %USERPROFILE%\\.aws\\credentials
-
-                    echo [default] > %USERPROFILE%\\.aws\\config
-                    echo region=%AWS_REGION% >> %USERPROFILE%\\.aws\\config
-                    '''
+                    echo 'Getting latest resume filename from S3...'
+                    bat '.\\venv\\Scripts\\python.exe process_resume.py'
                 }
             }
         }
 
-        stage('Download Resume from S3') {
+        stage('Download Latest Resume from S3') {
             steps {
                 script {
-                    echo 'Downloading resume from S3...'
-                    bat 'aws s3 cp s3://kaibucket78/resume.pdf .'
+                    echo 'Reading the latest resume filename...'
+                    def latestResume = readFile('latest_resume.txt').trim()
+                    echo "Downloading: ${latestResume}"
+                    bat "aws s3 cp s3://kaibucket78/${latestResume} ."
                 }
             }
         }
@@ -55,7 +49,7 @@ pipeline {
             steps {
                 script {
                     echo 'Processing resume...'
-                    bat '.\\venv\\Scripts\\python.exe process_resume.py resume.pdf'
+                    bat '.\\venv\\Scripts\\python.exe process_resume.py latest_resume.txt'
                 }
             }
         }
