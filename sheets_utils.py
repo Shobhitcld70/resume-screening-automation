@@ -4,7 +4,7 @@ import sys
 # Fix for Unicode issues in Windows
 sys.stdout.reconfigure(encoding='utf-8')
 
-WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzOb6QSNKUskCL_8zayo8H7b3ObltM5kXaHKA4PVwMl7QArOEZ1YMW2T3JZNUtrFYSUfA/exec"
+WEB_APP_URL = "https://script.google.com/macros/s/AKfycbww4tvJ886KPDkP0kBNGbjw0_hxNYuuUhZntxYU43dPCcg4Bn0kf3jA7mXewNzXJizytg/exec"
 
 def send_to_google_sheets(name, email, phone, sentiment, summary):
     """Send processed resume data to Google Sheets via Apps Script"""
