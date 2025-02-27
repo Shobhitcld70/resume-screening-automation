@@ -17,7 +17,7 @@ def update_google_sheets():
 
     if extracted_data:
         print("Updating Google Sheets...")
-        sheets_util.update_sheets(extracted_data)
+        sheets_utils.update_sheets(extracted_data)
         print("Google Sheets updated successfully!")
     else:
         print("No relevant data found in the resume.")
