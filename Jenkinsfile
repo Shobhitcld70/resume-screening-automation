@@ -4,7 +4,7 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = 'AKIASVLKCCI5HSX24XGK'
         AWS_SECRET_ACCESS_KEY = 'zz2uICfD/z1eZjCZndFRljWgdLuJqpiKQ+S2bOA6'
-        AWS_DEFAULT_REGION = 'us-east-1'  // Change this to your actual region
+        AWS_DEFAULT_REGION = 'us-east-1'  // Change if needed
     }
 
     stages {
@@ -40,7 +40,7 @@ pipeline {
                     echo 'Reading the latest resume filename...'
                     def latestResume = readFile('latest_resume.txt').trim()
                     echo "Downloading: ${latestResume}"
-                    bat "aws s3 cp s3://kaibucket78/${latestResume} ."
+                    bat "aws s3 cp \"s3://kaibucket78/${latestResume}\" ."
                 }
             }
         }
