@@ -1,18 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        AWS_REGION = 'us-east-1'  // Set your AWS region
-        S3_BUCKET = 'kaibucket78'  // Corrected bucket name
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
-                script {
-                    echo 'Cloning the repository...'
-                    checkout scm
-                }
+                echo 'Cloning the repository...'
+                checkout scm
             }
         }
 
@@ -20,7 +13,7 @@ pipeline {
             steps {
                 script {
                     echo 'Setting up Python environment...'
-                    bat 'python -m venv venv'
+                    bat '"C:\\Users\\umapc\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe" -m venv venv'
                     bat '.\\venv\\Scripts\\activate && pip install -r requirements.txt'
                 }
             }
@@ -30,7 +23,7 @@ pipeline {
             steps {
                 script {
                     echo 'Downloading resume from S3...'
-                    bat "aws s3 cp s3://kaibucket78/resume.pdf ."
+                    bat 'aws s3 cp s3://kaibucket78/resume.pdf .'
                 }
             }
         }
@@ -38,8 +31,8 @@ pipeline {
         stage('Process Resume') {
             steps {
                 script {
-                    echo 'Processing the resume...'
-                    bat '.\\venv\\Scripts\\activate && python process_resume.py'
+                    echo 'Processing resume...'
+                    bat '.\\venv\\Scripts\\python.exe process_resume.py resume.pdf'
                 }
             }
         }
@@ -48,17 +41,7 @@ pipeline {
             steps {
                 script {
                     echo 'Updating Google Sheets...'
-                    bat '.\\venv\\Scripts\\activate && python update_google_sheets.py'
-                }
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                script {
-                    echo 'Cleaning up temporary files...'
-                    bat 'deactivate'
-                    bat 'rmdir /s /q venv'
+                    bat '.\\venv\\Scripts\\python.exe update_sheets.py'
                 }
             }
         }
