@@ -19,4 +19,8 @@ def get_latest_resume():
 # Get the latest resume file
 RESUME_FILE = get_latest_resume()
 
-print(f"Processing the latest resume: {RESUME_FILE}")
+# Save the filename for Jenkins to read
+with open("latest_resume.txt", "w") as f:
+    f.write(RESUME_FILE)
+
+print(f"Latest resume file: {RESUME_FILE}")
