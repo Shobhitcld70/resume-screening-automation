@@ -1,6 +1,9 @@
 import requests
+import sys
 
-# Google Apps Script Web App URL
+# Fix for Unicode issues in Windows
+sys.stdout.reconfigure(encoding='utf-8')
+
 WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwx4KyQss6wPb78tWyVXXdyRIje56zE6qgJSChDbRoBB54kTEYYEjMQka34RbrZ9Y9jQg/exec"
 
 def send_to_google_sheets(name, email, phone, sentiment, summary):
@@ -16,18 +19,20 @@ def send_to_google_sheets(name, email, phone, sentiment, summary):
 
     try:
         response = requests.post(WEB_APP_URL, json=data)
+        
+        # Debugging: Print raw response
+        print("🔄 Response Status Code:", response.status_code)
+        print("📄 Response Text:", response.text)  
+
         response.raise_for_status()  # Raises an error for bad responses
 
-        # Check JSON response
         response_data = response.json()
         if response_data.get("status") == "success":
             print("✅ Data sent successfully to Google Sheets!")
         else:
             print("⚠️ Data sent, but check the response:", response_data)
 
+    except requests.exceptions.JSONDecodeError:
+        print("⚠️ Error: Response is not valid JSON. Check Web App URL or deployment.")
     except requests.exceptions.RequestException as e:
-        print("❌ Failed to send data. Error:", e)
-
-# Example usage (for testing)
-if __name__ == "__main__":
-    send_to_google_sheets("John Doe", "johndoe@example.com", "+1234567890", "Positive", "Experienced Software Engineer.")
+        print("Failed to send data. Error:", e)
