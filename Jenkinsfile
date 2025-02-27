@@ -5,7 +5,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = 'AKIASVLKCCI5HSX24XGK'
         AWS_SECRET_ACCESS_KEY = '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'
         AWS_DEFAULT_REGION = 'us-east-1'  // Change if needed
-        PYTHONPATH = 'C:\\Users\\umapc\\Downloads;' + env.PYTHONPATH
+        PYTHONPATH = "C:\\Users\\umapc\\Downloads"
     }
 
     stages {
