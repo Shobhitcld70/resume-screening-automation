@@ -1,42 +1,75 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_REGION = 'us-east-1'  // Set your AWS region
+        S3_BUCKET = 'kaibucket78'  // Corrected bucket name
+    }
+
     stages {
+        stage('Clone Repository') {
+            steps {
+                script {
+                    echo 'Cloning the repository...'
+                    checkout scm
+                }
+            }
+        }
+
         stage('Setup Python Environment') {
             steps {
-                echo '🔧 Setting up Python environment...'
-                sh 'pip install -r requirements.txt'
+                script {
+                    echo 'Setting up Python environment...'
+                    bat 'python -m venv venv'
+                    bat '.\\venv\\Scripts\\activate && pip install -r requirements.txt'
+                }
             }
         }
 
         stage('Download Resume from S3') {
             steps {
-                echo '📥 Downloading latest resume from S3...'
-                sh 'aws s3 cp s3://your-resume-bucket/latest_resume.pdf ./resume.pdf'
+                script {
+                    echo 'Downloading resume from S3...'
+                    bat "aws s3 cp s3://kaibucket78/resume.pdf ."
+                }
             }
         }
 
         stage('Process Resume') {
             steps {
-                echo '📝 Extracting text from resume...'
-                sh 'python process_resume.py resume.pdf'
+                script {
+                    echo 'Processing the resume...'
+                    bat '.\\venv\\Scripts\\activate && python process_resume.py'
+                }
             }
         }
 
         stage('Update Google Sheets') {
             steps {
-                echo '📊 Sending extracted data to Google Sheets...'
-                sh 'python send_to_sheets.py'
+                script {
+                    echo 'Updating Google Sheets...'
+                    bat '.\\venv\\Scripts\\activate && python update_google_sheets.py'
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    echo 'Cleaning up temporary files...'
+                    bat 'deactivate'
+                    bat 'rmdir /s /q venv'
+                }
             }
         }
     }
 
     post {
         success {
-            echo '✅ Resume processed and sent successfully!'
+            echo 'Pipeline completed successfully!'
         }
         failure {
-            echo '❌ Pipeline failed. Check logs for errors.'
+            echo 'Pipeline failed. Please check the logs.'
         }
     }
 }
