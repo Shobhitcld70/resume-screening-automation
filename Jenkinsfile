@@ -5,7 +5,7 @@ pipeline {
         AWS_ACCESS_KEY_ID = 'AKIASVLKCCI5HSX24XGK'
         AWS_SECRET_ACCESS_KEY = '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'
         AWS_DEFAULT_REGION = 'us-east-1'  // Change if needed
-        PYTHONPATH = "C:\\Users\\umapc\\Downloads\\pdfplumber-0.11.5"
+        PYTHONPATH = "C:\\Users\\umapc\\Downloads\\pdfplumber-0.11.5;C:\\Users\\umapc\\Downloads\\pdfplumber-0.11.5\\pdfminer"
     }
 
     stages {
@@ -22,6 +22,16 @@ pipeline {
                     echo 'Setting up Python environment...'
                     bat '"C:\\Users\\umapc\\AppData\\Local\\Microsoft\\WindowsApps\\python.exe" -m venv venv'
                     bat '.\\venv\\Scripts\\activate && pip install -r requirements.txt'
+                    bat '.\\venv\\Scripts\\activate && pip install pdfplumber pdfminer.six'
+                }
+            }
+        }
+
+        stage('Verify Dependencies') {
+            steps {
+                script {
+                    echo 'Verifying installed dependencies...'
+                    bat '.\\venv\\Scripts\\python.exe -m pip list'
                 }
             }
         }
