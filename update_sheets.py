@@ -1,5 +1,5 @@
 import sheets_utils
-import process_resumeb
+import process_resume
 
 def update_google_sheets():
     """
